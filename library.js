@@ -61,7 +61,7 @@ module.exports = {
 			}
 			res.json(output);
 		});
-	};
+	},
 
 	/**
 	 * Calculate
