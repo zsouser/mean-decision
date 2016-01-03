@@ -1,0 +1,32 @@
+{
+  "name": "decision-support",
+  "description": "Decision Support System",
+  "main": "app.js",
+  "authors": [
+    "Zach Souser"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Decision",
+    "Support",
+    "System"
+  ],
+  "moduleType": [
+    "es6",
+    "globals",
+    "node"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-tags-input": "~3.0.0",
+    "angularjs-slider": "~2.4.0"
+  }
+}
