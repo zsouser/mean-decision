@@ -5,17 +5,17 @@ block content
   p Decisions are hard. Let us help you. The Decision Support system allows you to evaluate your choices critically.
   p Please enter your information below to begin calculating.
   fieldset
-    legend Choices
-    p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
-    p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
-    tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
-      auto-complete(source="loadChoices($query)")
-  fieldset
     legend Factors
     p The most important part of the process is to identify the factors that influence your decision.
     p For instance, you may consider "Traffic," "Cost of Living," or any similar <i>factors</i> when making a decision on where to move.
     tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)", on-tag-removed="removeFactor($tag)")
       auto-complete(source="loadFactors($query)")
+  fieldset
+    legend Choices
+    p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
+    p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
+    tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
+      auto-complete(source="loadChoices($query)")
 
   canvas(id="pie", class="chart chart-pie", chart-data="series", chart-labels="labels") 
 

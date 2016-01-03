@@ -20,10 +20,18 @@ angular
 	    $scope.loadFactors = function(query) {
 	         return $http.get('/factors?query=' + escape(query));
 	    };
+	    $scope.lookup = function(choice, factor) {
+			$http.get('/ranking?choice=' + choice + '&factor=' + factor)
+    			.then(function(response) {
+    				console.log(response.data);
+    				$scope.rankings[choice][factor] = parseInt(response.data);
+    			}, function(response) { console.log(response) }
+    		);
+	    };
 	    $scope.addChoice = function(choice) {
 	    	$scope.rankings[choice.text] = {};
 	    	for (factor in $scope.weighted) {
-	    		$scope.rankings[choice.text][factor] = 10;//parseInt($http.get('/ranking?choice=' + escape(choice) + '&factor=' + escape($scope.factors[factor])));
+	    		$scope.lookup(choice.text, factor);
 	    	}
 	    	$scope.calculate();
 	    };
@@ -43,7 +51,7 @@ angular
 	    $scope.addFactor = function(factor) {
 	    	$scope.weighted[factor.text] = 10;
 	    	for (choice in $scope.rankings) {
-	    		$scope.rankings[choice][factor.text] = 10;//parseInt($http.get('/ranking?choice=' + escape($scope.choices[choice]) + '&factor=' + escape(factor)));
+	    		$scope.lookup(choice, factor.text);
 	    	}
 	    	$scope.calculate();
 	    };

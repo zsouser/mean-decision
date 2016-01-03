@@ -86,5 +86,22 @@ module.exports = {
 	 */
 	handler: function(error) {
 		if (error) console.log(error);
+	},
+
+	/**
+	 * Get the average rating for this choice 
+	 * relative to this characteristic
+	 */
+	getAverage: function(choice, factor, res) {
+		var Ranking = require('./models/ranking.js');
+		Ranking.aggregate(
+			{ $match: { choice: choice, factor: factor } },
+			{ $group: { _id: null, average: { $avg: "$value" } } }
+		).exec(function(err, result) {
+
+			var avg = result[0] ? parseInt(result[0].average || 10) : 10
+			console.log(avg);
+			res.json(avg);
+		});
 	}
 };

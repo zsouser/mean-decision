@@ -31,4 +31,8 @@ router.get('/choices', function(req, res, next) {
 	Library.autocomplete(Choice, req, res);
 });
 
+router.get('/ranking', function(req, res, next) {
+	Library.getAverage(req.query.choice, req.query.factor, res);
+})
+
 module.exports = router;
