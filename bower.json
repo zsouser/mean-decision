@@ -27,6 +27,8 @@
   ],
   "dependencies": {
     "ng-tags-input": "~3.0.0",
-    "angularjs-slider": "~2.4.0"
+    "angularjs-slider": "~2.4.0",
+    "angular-chart.js": "~0.8.8",
+    "Chart.js": "~1.0.2"
   }
 }

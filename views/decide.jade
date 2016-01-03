@@ -8,40 +8,28 @@ block content
     legend Choices
     p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
     p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
-    tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)")
+    tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
       auto-complete(source="loadChoices($query)")
   fieldset
     legend Factors
     p The most important part of the process is to identify the factors that influence your decision.
     p For instance, you may consider "Traffic," "Cost of Living," or any similar <i>factors</i> when making a decision on where to move.
-    tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)")
+    tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)", on-tag-removed="removeFactor($tag)")
       auto-complete(source="loadFactors($query)")
-  
-  hr
 
-  b Factors
-  br
-  {{ factors }}
-  br
-  b Weighted
-  br
-  {{ weighted }}
-  br
-  b Choices
-  br
-  {{ choices }}
-  br
-  b Rankings
-  br
-  {{ rankings }}
+  canvas(id="pie", class="chart chart-pie", chart-data="series", chart-labels="labels") 
 
-  div(ng-repeat="(factor, weight) in weighted")
+  #outer(ng-repeat="(factor, weight) in weighted")
     h2 How would you rate "{{ factor }}"?
-    input(type="number", ng-model="weighted[factor]")
-    h2 How do your choices compare in terms of "{{ factor }}?"
-    div(ng-repeat="(choice, values) in rankings")
+    rzslider(rz-slider-model="weighted[factor]", rz-slider-options="slider", class="slider")
+    #inner(ng-repeat="(choice, values) in rankings")
       h3 {{ choice }}
-      input(type="number", ng-model="rankings[choice][factor]")
+      rzslider(rz-slider-model="rankings[choice][factor]", rz-slider-options="slider", class="slider")
 
   script(src="/javascripts/webapp.js")
   script(src="/ng-tags-input/ng-tags-input.min.js")
+  script(src="/angularjs-slider/dist/rzslider.min.js")
+  script(src="/Chart.js/Chart.js")
+  script(src="/angular-chart.js/dist/angular-chart.js")
+  link(rel="stylesheet", href="/angularjs-slider/dist/rzslider.css")
+  link(rel="stylesheet", href="/angular-chart.js/dist/angular-chart.css")

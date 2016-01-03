@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var db = mongoose.createConnection('mongodb://localhost/test');
 
-var Factor = mongoose.model('Factor', mongoose.Schema({ 
+var Factor = db.model('Factor', mongoose.Schema({ 
 	name: String,
 	rankings : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ranking' }] 
 }));
