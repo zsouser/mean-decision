@@ -1,12 +1,17 @@
 angular
 	.module('decision', ['ngTagsInput', 'rzModule', 'chart.js'])
 	.controller('controller', function($scope, $http) {
-	    $scope.choices 	= [];
-	    $scope.factors 	= [];
-	    $scope.weighted = {};
-	    $scope.rankings = {};
-	    $scope.series 	= [];
-	    $scope.labels	= [];
+	    $scope.choices 		= [];
+	    $scope.factors 		= [];
+	    $scope.weighted 	= {};
+	    $scope.rankings 	= {};
+	    $scope.series 		= [];
+	    $scope.labels		= [];
+	    $scope.setup 		= true;
+	    $scope.activeFactor = false;
+
+	    
+	    // Default slider options
 	    $scope.slider = {
 	    	ceil: 100,
 	    	floor: 1,
@@ -14,6 +19,7 @@ angular
 	    		$scope.calculate()
 	    	},
 	    };
+
 	    $scope.loadChoices = function(query) {
 	         return $http.get('/choices?query=' + escape(query));
 	    };
@@ -28,6 +34,16 @@ angular
     			}, function(response) { console.log(response) }
     		);
 	    };
+	    $scope.selectFactor = function(factor) {
+	    	console.log(factor);
+	    	$scope.activeFactor = factor;
+	    }
+	    $scope.hideSliders = function() {
+	    	$scope.activeFactor = false;
+	    }
+	    $scope.toggleSetup = function() {
+			$scope.setup = !$scope.setup;
+	    }
 	    $scope.addChoice = function(choice) {
 	    	$scope.rankings[choice.text] = {};
 	    	for (factor in $scope.weighted) {
@@ -60,11 +76,11 @@ angular
 	    		factors: $scope.weighted,
 	    		choices: $scope.rankings
 	    	}).then(function(response) {
-	    		$scope.answers = response.data;
+	    		console.log(response.data);
 	    		$scope.series = [];
 	    		$scope.labels = [];
-	    		for (key in $scope.answers) {
-		    		$scope.series.push(($scope.answers[key] * 100).toFixed(2));
+	    		for (key in response.data) {
+		    		$scope.series.push((response.data[key] * 100).toFixed(2));
 		    		$scope.labels.push(key);
 		    	}
 	    	}, function(response) { console.log(response) });	

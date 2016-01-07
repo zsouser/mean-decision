@@ -3,28 +3,52 @@ extends layout
 block content
   h1 Decision Support System
   p Decisions are hard. Let us help you. The Decision Support system allows you to evaluate your choices critically.
-  p Please enter your information below to begin calculating.
-  fieldset
-    legend Factors
-    p The most important part of the process is to identify the factors that influence your decision.
-    p For instance, you may consider "Traffic," "Cost of Living," or any similar <i>factors</i> when making a decision on where to move.
-    tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)", on-tag-removed="removeFactor($tag)")
-      auto-complete(source="loadFactors($query)")
-  fieldset
-    legend Choices
-    p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
-    p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
-    tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
-      auto-complete(source="loadChoices($query)")
+  //
+    ul
+      li Active: {{ activeFactor }}
+      li Factors: {{ factors }}
+      li Choices: {{ choices }}
+      li Rankings: {{ rankings }}
+      li Series: {{ series }}
+      li Weighted; {{ weighted }}
+      li Labels: {{ labels }}
+  #wrap
 
-  canvas(id="pie", class="chart chart-pie", chart-data="series", chart-labels="labels") 
+    canvas(ng-hide="setup", id="pie", class="chart chart-pie", chart-data="series", chart-labels="labels") 
+    
+    ul(ng-hide="setup || activeFactor")
+      li(ng-repeat="factor in factors")
+        button(ng-click="selectFactor(factor.text)") Rate choices for {{ factor.text }}
+      li 
+        button(ng-click="toggleSetup()") Go back to choices or factors
 
-  #outer(ng-repeat="(factor, weight) in weighted")
-    h2 How would you rate "{{ factor }}"?
-    rzslider(rz-slider-model="weighted[factor]", rz-slider-options="slider", class="slider")
-    #inner(ng-repeat="(choice, values) in rankings")
-      h3 {{ choice }}
-      rzslider(rz-slider-model="rankings[choice][factor]", rz-slider-options="slider", class="slider")
+
+    #factor(ng-show="activeFactor")
+      h2 How would you rate "{{ activeFactor }}"?
+      rzslider(rz-slider-model="weighted[activeFactor]", rz-slider-options="slider", class="slider")
+      h2 In terms of {{ activeFactor }}, how do your choices measure up?
+      #inner(ng-repeat="(choice, values) in rankings")
+        h3 {{ choice }}
+        rzslider(rz-slider-model="rankings[choice][activeFactor]", rz-slider-options="slider", class="slider")
+      button(ng-click="hideSliders()") Back to the list of factors.
+
+    #setup(ng-show="setup && !activeFactor")
+      fieldset
+        legend Factors
+        p The most important part of the process is to identify the factors that influence your decision.
+        p For instance, you may consider "Traffic," "Cost of Living," or any similar <i>factors</i> when making a decision on where to move.
+        tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)", on-tag-removed="removeFactor($tag)")
+          auto-complete(source="loadFactors($query)")
+      fieldset
+        legend Choices
+        p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
+        p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
+        tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
+          auto-complete(source="loadChoices($query)")
+
+      button(ng-click="toggleSetup()") Now let's evaluate your options...
+
+
 
   script(src="/javascripts/webapp.js")
   script(src="/ng-tags-input/ng-tags-input.min.js")

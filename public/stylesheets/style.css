@@ -1,5 +1,5 @@
 body {
-  padding: 5%;
+  margin:5%;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -7,12 +7,15 @@ a {
   color: #00B7FF;
 }
 
-#outer {
-	padding: 5%;
-	background-color:#eee;
+button {
+	width: 100%;
+	background-color:white;
+	border-radius:0px;
 }
-#inner {
-	padding: 5%;
-	border-left: 1px solid black;
-	border-right:1px solid black;
+li {
+	list-style: none;
+}
+ul {
+	margin:0px;
+	padding:0px;
 }
