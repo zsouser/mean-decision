@@ -15,7 +15,7 @@ block content
   #wrap
 
     canvas(ng-hide="setup", id="pie", class="chart chart-pie", chart-data="series", chart-labels="labels") 
-    
+
     ul(ng-hide="setup || activeFactor")
       li(ng-repeat="factor in factors")
         button(ng-click="selectFactor(factor.text)") Rate choices for {{ factor.text }}
@@ -33,19 +33,19 @@ block content
       button(ng-click="hideSliders()") Back to the list of factors.
 
     #setup(ng-show="setup && !activeFactor")
-      fieldset
-        legend Factors
+      div
+        h2 Factors
         p The most important part of the process is to identify the factors that influence your decision.
         p For instance, you may consider "Traffic," "Cost of Living," or any similar <i>factors</i> when making a decision on where to move.
         tags-input(ng-model="factors", replace-spaces-with-dashes="false", on-tag-added="addFactor($tag)", on-tag-removed="removeFactor($tag)")
           auto-complete(source="loadFactors($query)")
-      fieldset
-        legend Choices
+      div
+        h2 Choices
         p The <i>choices</i> in your decision are simple words or phrases that represent each of the options you face in your decision-making process.
         p For example, if you are moving cities, your choices may be "Denver," "New York," etc. 
         tags-input(ng-model="choices", replace-spaces-with-dashes="false", on-tag-added="addChoice($tag)", on-tag-removed="removeChoice($tag)")
           auto-complete(source="loadChoices($query)")
-
+      hr
       button(ng-click="toggleSetup()") Now let's evaluate your options...
 
 
