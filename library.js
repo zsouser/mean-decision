@@ -27,15 +27,15 @@ module.exports = {
 		var Ranking = require('./models/ranking.js');
 		
 		for (factor in factors) {
-			savedFactors[factor] = Factor.findOneAndUpdate({ name: factor }, { name: factor }, { upsert: true }, this.handler);
+			savedFactors[factor] = Factor.findOneAndUpdate({ name: factor.toLowerCase() }, { name: factor.toLowerCase() }, { upsert: true }, this.handler);
 		}
 
 		for (choice in choices) {
-			var savedChoice = Choice.findOneAndUpdate({ name: choice }, { name: choice }, { upsert: true }, this.handler);
+			var savedChoice = Choice.findOneAndUpdate({ name: choice.toLowerCase() }, { name: choice.toLowerCase() }, { upsert: true }, this.handler);
 			for (factor in choices[choice]) {
 				new Ranking({ 
-					choice: choice,
-					factor: factor,
+					choice: choice.toLowerCase(),
+					factor: factor.toLowerCase(),
 					value: choices[choice][factor]
 				}).save(this.handler);
 			}
@@ -74,9 +74,14 @@ module.exports = {
 	 */
 	calculate: function(factors, choices) {
 		for (key in choices) {
-			choices[key] = Object.keys(choices[key]).reduce(function(prev, next) {
-				return prev + choices[key][next] * factors[next];
-			}, 0);
+			if (Object.keys(choices[key]).length == 0) {
+				choices[key] = 1;
+			}
+			else {
+				choices[key] = Object.keys(choices[key]).reduce(function(prev, next) {
+					return prev + choices[key][next] * factors[next];
+				}, 0);
+			}
 		}
 		return this.normalize(choices);
 	},
@@ -95,13 +100,11 @@ module.exports = {
 	getAverage: function(choice, factor, res) {
 		var Ranking = require('./models/ranking.js');
 		Ranking.aggregate(
-			{ $match: { choice: choice, factor: factor } },
+			{ $match: { choice: choice.toLowerCase(), factor: factor.toLowerCase() } },
 			{ $group: { _id: null, average: { $avg: "$value" } } }
 		).exec(function(err, result) {
-
 			var avg = result[0] ? parseInt(result[0].average || 10) : 10
-			console.log(avg);
-			res.json(avg);
+			res.json({ choice: choice, factor: factor, ranking: avg });
 		});
 	}
 };

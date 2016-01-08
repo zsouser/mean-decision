@@ -9,6 +9,7 @@ angular
 	    $scope.labels		= [];
 	    $scope.setup 		= true;
 	    $scope.activeFactor = false;
+	    $scope.shouldLookup = false;
 
 	    
 	    // Default slider options
@@ -26,29 +27,40 @@ angular
 	    $scope.loadFactors = function(query) {
 	         return $http.get('/factors?query=' + escape(query));
 	    };
-	    $scope.lookup = function(choice, factor) {
-			$http.get('/ranking?choice=' + choice + '&factor=' + factor)
-    			.then(function(response) {
-    				console.log(response.data);
-    				$scope.rankings[choice][factor] = parseInt(response.data);
-    			}, function(response) { console.log(response) }
-    		);
+	    $scope.lookup = function() {
+	    	var semaphore = 0;
+	    	for (choice in $scope.rankings) {
+	    		for (factor in $scope.weighted) {
+	    			semaphore++;
+			    	$http.get('/ranking?choice=' + choice + '&factor=' + factor)
+		    			.then(function(response) {
+		    				semaphore--;
+		    				$scope.rankings[response.data.choice][response.data.factor] = parseInt(response.data.ranking);
+		    				if (!semaphore) {
+	    						$scope.calculate();
+	    					}
+		    			}, function(response) { console.log(response) }
+	    			);
+		    	}
+	    	}
 	    };
 	    $scope.selectFactor = function(factor) {
-	    	console.log(factor);
 	    	$scope.activeFactor = factor;
 	    }
 	    $scope.hideSliders = function() {
-	    	$scope.activeFactor = false;
+	    	$scope.activeFactor = "";
 	    }
 	    $scope.toggleSetup = function() {
-			$scope.setup = !$scope.setup;
+	    	if (Object.keys($scope.rankings).length)
+				$scope.setup = !$scope.setup;
 	    }
 	    $scope.addChoice = function(choice) {
-	    	$scope.rankings[choice.text] = {};
-	    	for (factor in $scope.weighted) {
-	    		$scope.lookup(choice.text, factor);
-	    	}
+	    	if (choice && choice.text) {
+		    	$scope.rankings[choice.text] = {};
+		    	for (factor in $scope.weighted) {
+		    		$scope.rankings[choice.text][factor] = 10;
+		    	}
+			}
 	    	$scope.calculate();
 	    };
 	    $scope.removeChoice = function(choice) {
@@ -65,10 +77,12 @@ angular
 	    	$scope.calculate();
 	    };
 	    $scope.addFactor = function(factor) {
-	    	$scope.weighted[factor.text] = 10;
-	    	for (choice in $scope.rankings) {
-	    		$scope.lookup(choice, factor.text);
-	    	}
+	    	if (factor && factor.text) {
+		    	$scope.weighted[factor.text] = 10;
+		    	for (choice in $scope.rankings) {
+		    		$scope.rankings[choice][factor.text] = 10;
+		    	}
+			}
 	    	$scope.calculate();
 	    };
 	    $scope.calculate = function() {
@@ -76,7 +90,6 @@ angular
 	    		factors: $scope.weighted,
 	    		choices: $scope.rankings
 	    	}).then(function(response) {
-	    		console.log(response.data);
 	    		$scope.series = [];
 	    		$scope.labels = [];
 	    		for (key in response.data) {
